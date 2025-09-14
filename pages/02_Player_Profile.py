@@ -7,9 +7,6 @@ from pages.esports import load_csv, find_column, map_win_to_numeric
 st.title("선수 프로필")
 
 
-
-
-
 csv_file = Path("lck.csv")
 with st.spinner("데이터 로딩 중..."):
     try:
@@ -117,15 +114,26 @@ champion_df = work_df.groupby('champion').apply(
 ).sort_values(['픽 수', '승률'], ascending=[False, False])
 st.dataframe(champion_df.head(7), width='stretch')
 
-
 st.subheader("경기별 기록")
-show_cols = []
-for c in [patch_col, team_col, pos_col, kill_col, death_col, assist_col, cs_col, gold_col, win_col]:
-    if c and c in work_df.columns:
-        show_cols.append(c)
-if player_col in work_df.columns:
-    show_cols = [player_col] + show_cols
+match_pos = work_df.position.max()
 
-st.dataframe(work_df[show_cols].head(200), width='stretch')
+match_df = df[df.gameid.isin(work_df.gameid) & (df.position == match_pos)].groupby('date').apply(
+    lambda x: pd.Series(
+        {
+            'champion': x[x.playername == sel_player].champion.max(),
+            'opp_champion': x[x.playername != sel_player].champion.max(),
+            'opp_player': x[x.playername != sel_player].playername.values[0],
+            'patch': x.patch.max(),
+            'kills': x[x.playername == sel_player].kills.values[0],
+            'deaths': x[x.playername == sel_player].deaths.values[0],
+            'assists': x[x.playername == sel_player].assists.values[0],
+            'gametime': f'{x.gamelength.max()//60:02d}:{x.gamelength.max()%60:02d}',
+            'win': x[x.playername == sel_player].result.values[0]
+
+        }
+    )
+)
+
+st.dataframe(match_df.head(50), width='stretch')
 
 
