@@ -55,15 +55,26 @@ def tutorial():
         st.write("**선수A와 선수B를 같은 포지션으로 선택해주세요.**")
 
 
-@st.dialog("사용 방법", width='large')
+@st.dialog("지표 설명", width='large')
 def variable_explain():
+    st.subheader('지표 나눈 기준')
+    st.write("데이터의 각 변수들의 분산의 거리에 따라 지표를 clustering.")
+    st.write("cluster 간의 거리가 갑자기 증가한 부분을 기점으로 잡았으며,")
+    st.write("그 중 팀 지표로 크게 유효하지 않는 그룹을 제외하고 총 6개의 cluster가 아래와 같음.")
     st.subheader('성장')
+    st.write("DPM, damage share, gold 관련 지표, cs 관련 지표, xp 관련 지표")
     st.subheader('공격')
+    st.write("kill 관련 지표, 퍼블, 타워/억제기")
     st.subheader('격차')
+    st.write("시간 때 별 골드/xp/cs 격차")
     st.subheader('수비/죽음')
+    st.write("death 관련 지표, 피퍼블, 피assist")
     st.subheader('시야')
+    st.write("와드 설치, 와드 제거, 제어 와드 구매")
     st.subheader('협동')
+    st.write("assist, 피death 관련 지표")
     st.subheader('atTIME')
+    st.write("시간에 따른 라인전 지표 위의 6개의 cluster 원소와 겹침")
 
 
 if button_explain:
@@ -129,6 +140,8 @@ if sel_position != '(전체)' and player_a == "선택하세요" and player_b == 
         line_close=True,  # 마지막 점과 첫 점을 연결하여 다각형 생성
         title=f'{sel_position} 선수 Round1-2 능력치 비교'
     )
+    fig.update_layout(
+        height=1200, width=1600,)
     st.plotly_chart(fig, width='stretch')
 
     pos_data = pca_35_df[sel_position][pca_35_df[sel_position].playername.apply(lambda x: x in players_18plus_pos)]
@@ -142,6 +155,8 @@ if sel_position != '(전체)' and player_a == "선택하세요" and player_b == 
         line_close=True,  # 마지막 점과 첫 점을 연결하여 다각형 생성
         title=f'{sel_position} 선수 Round3-5 능력치 비교'
     )
+    fig.update_layout(
+        height=1200, width=1600,)
     st.plotly_chart(fig, width='stretch')
 
 
